@@ -1,0 +1,969 @@
+{
+	"info": {
+		"_postman_id": "17c2a522-7692-4582-8b6e-3d38d86ae76e",
+		"name": "PET STORE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37158621"
+	},
+	"item": [
+		{
+			"name": "USER MODULE",
+			"item": [
+				{
+					"name": "CREATE USER",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"function generateRandomString(length) {\r",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';\r",
+									"    let result = '';\r",
+									"    for (let i = 0; i < length; i++) {\r",
+									"        result += characters.charAt(Math.floor(Math.random() * characters.length));\r",
+									"    }\r",
+									"    return result;\r",
+									"}\r",
+									"\r",
+									"function generateRandomEmail() {\r",
+									"    const domains = [\"gmail.com\", \"yahoo.com\", \"outlook.com\", \"example.com\"];\r",
+									"    const localPart = generateRandomString(8);\r",
+									"    const domain = domains[Math.floor(Math.random() * domains.length)];\r",
+									"    return `${localPart}@${domain}`;\r",
+									"}\r",
+									"\r",
+									"function generateRandomPhone() {\r",
+									"    return Math.floor(Math.random() * (999999999 - 900000000) + 900000000);\r",
+									"}\r",
+									"function getRandomFirstName() {\r",
+									"    const firstNames = [\"James\", \"John\", \"Mary\", \"Sarah\", \"David\", \"Jessica\", \"Michael\", \"Emily\", \"Robert\", \"Linda\"];\r",
+									"    return firstNames[Math.floor(Math.random() * firstNames.length)];\r",
+									"}\r",
+									"function getRandomLastName() {\r",
+									"    const lastNames = [\"Mathew\", \"Smith\", \"Johnson\", \"Brown\", \"Taylor\", \"Anderson\", \"Thomas\", \"Jackson\", \"White\", \"Harris\"];\r",
+									"    return lastNames[Math.floor(Math.random() * lastNames.length)];\r",
+									"}\r",
+									"pm.environment.set(\"random_username\", generateRandomString(6)); \r",
+									"pm.environment.set(\"random_firstName\", getRandomFirstName()); \r",
+									"pm.environment.set(\"random_lastName\", getRandomLastName());\r",
+									"pm.environment.set(\"random_email\", generateRandomEmail());\r",
+									"pm.environment.set(\"random_password\", generateRandomString(8)); \r",
+									"pm.environment.set(\"random_phone\", generateRandomPhone());\r",
+									"\r",
+									"console.log(\"Generated Random User Data: \");\r",
+									"console.log({\r",
+									"    username: pm.environment.get(\"random_username\"),\r",
+									"    firstName: pm.environment.get(\"random_firstName\"),\r",
+									"    lastName: pm.environment.get(\"random_lastName\"),\r",
+									"    email: pm.environment.get(\"random_email\"),\r",
+									"    password: pm.environment.get(\"random_password\"),\r",
+									"    phone: pm.environment.get(\"random_phone\"),\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validate the status code\",()=>{\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"username\": \"{{random_username}}\",\r\n  \"firstName\": \"{{random_firstName}}\",\r\n  \"lastName\": \"{{random_lastName}}\",\r\n  \"email\": \"{{random_email}}\",\r\n  \"password\": \"{{random_password}}\",\r\n  \"phone\": \"{{random_phone}}\",\r\n  \"userStatus\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_URI}}/user",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"user"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/user' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 0,\r\n  \"username\": \"veena\",\r\n  \"firstName\": \"james\",\r\n  \"lastName\": \"mathew\",\r\n  \"email\": \"john@gmail.com\",\r\n  \"password\": \"fgjhgjh\",\r\n  \"phone\": \"9865356\",\r\n  \"userStatus\": 0\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "FETCH USER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validate the response status code\", () => {\r",
+									"    pm.response.to.have.status(200); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validate response contains expected JSON structure\", () => {\r",
+									"    pm.response.to.be.json;  \r",
+									"    const responseBody = pm.response.json();\r",
+									"    pm.expect(responseBody).to.have.property('id');\r",
+									"    pm.expect(responseBody).to.have.property('username');\r",
+									"    pm.expect(responseBody).to.have.property('firstName');\r",
+									"    pm.expect(responseBody).to.have.property('lastName');\r",
+									"    pm.expect(responseBody).to.have.property('email');\r",
+									"    pm.expect(responseBody).to.have.property('password');\r",
+									"    pm.expect(responseBody).to.have.property('phone');\r",
+									"    pm.expect(responseBody).to.have.property('userStatus');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validate values in the response\", () => {\r",
+									"    const responseBody = pm.response.json();\r",
+									"    pm.expect(responseBody.id).to.be.a('number');\r",
+									"    pm.expect(responseBody.username).to.be.a('string');\r",
+									"\r",
+									"    pm.expect(responseBody.firstName).to.be.a('string');\r",
+									"    pm.expect(responseBody.lastName).to.be.a('string');\r",
+									"    pm.expect(responseBody.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/); \r",
+									"    pm.expect(responseBody.phone).to.be.a('string');\r",
+									"    \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validate the email format\", () => {\r",
+									"    const responseBody = pm.response.json();\r",
+									"    pm.expect(responseBody.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validate the response time is acceptable\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);  \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_URI}}/user/{{random_username}}",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"user",
+								"{{random_username}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/user/alna' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "LOGIN USER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_URI}}/user/login?username={{random_username}}&password={{random_password}}",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"user",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "{{random_username}}"
+								},
+								{
+									"key": "password",
+									"value": "{{random_password}}"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/user/login?username=alna&password=fgjhgjh' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE USER",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomString(length) {\r",
+									"    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';\r",
+									"    let result = '';\r",
+									"    for (let i = 0; i < length; i++) {\r",
+									"        result += characters.charAt(Math.floor(Math.random() * characters.length));\r",
+									"    }\r",
+									"    return result;\r",
+									"}\r",
+									"\r",
+									"function generateRandomEmail() {\r",
+									"    const domains = [\"gmail.com\", \"yahoo.com\", \"outlook.com\", \"example.com\"];\r",
+									"    const localPart = generateRandomString(8);\r",
+									"    const domain = domains[Math.floor(Math.random() * domains.length)];\r",
+									"    return `${localPart}@${domain}`;\r",
+									"}\r",
+									"\r",
+									"function generateRandomPhone() {\r",
+									"    return Math.floor(Math.random() * (999999999 - 900000000) + 900000000);\r",
+									"}\r",
+									"function getRandomFirstName() {\r",
+									"    const firstNames = [\"James\", \"John\", \"Mary\", \"Sarah\", \"David\", \"Jessica\", \"Michael\", \"Emily\", \"Robert\", \"Linda\"];\r",
+									"    return firstNames[Math.floor(Math.random() * firstNames.length)];\r",
+									"}\r",
+									"function getRandomLastName() {\r",
+									"    const lastNames = [\"Mathew\", \"Smith\", \"Johnson\", \"Brown\", \"Taylor\", \"Anderson\", \"Thomas\", \"Jackson\", \"White\", \"Harris\"];\r",
+									"    return lastNames[Math.floor(Math.random() * lastNames.length)];\r",
+									"}\r",
+									"pm.environment.set(\"random_username\", generateRandomString(6)); \r",
+									"pm.environment.set(\"random_firstName\", getRandomFirstName()); \r",
+									"pm.environment.set(\"random_lastName\", getRandomLastName());\r",
+									"pm.environment.set(\"random_email\", generateRandomEmail());\r",
+									"pm.environment.set(\"random_password\", generateRandomString(8)); \r",
+									"pm.environment.set(\"random_phone\", generateRandomPhone());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"username\": \"{{random_username}}\",\r\n  \"firstName\": \"{{random_firstName}}\",\r\n  \"lastName\": \"{{random_lastName}}\",\r\n  \"email\": \"{{random_email}}\",\r\n  \"password\": \"{{random_password}}\",\r\n  \"phone\": \"{{random_phone}}\",\r\n  \"userStatus\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_URI}}/user/{{random_username}}",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"user",
+								"{{random_username}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'PUT' \\\r\n  'https://petstore.swagger.io/v2/user/alna' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 0,\r\n  \"username\": \"string\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"email\": \"string\",\r\n  \"password\": \"string\",\r\n  \"phone\": \"string\",\r\n  \"userStatus\": 0\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "LOGOUT USER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Validate the status code\", () => {\r",
+									"    pm.response.to.have.status(200); \r",
+									"});\r",
+									"pm.test(\"Validate values in the response\", () => {\r",
+									"    const responseBody = pm.response.json(); \r",
+									"    pm.expect(responseBody.code).to.eql(200);\r",
+									"    pm.expect(responseBody.message).to.eql('ok');\r",
+									"});\r",
+									"pm.test(\"Validate the response time\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000); \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_URI}}/user/logout",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"user",
+								"logout"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/user/logout' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE USER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Validate values in the response\", () => {\r",
+									"    const responseBody = pm.response.json(); \r",
+									"    pm.expect(responseBody.code).to.eql(200);\r",
+									"    pm.expect(responseBody.message).to.eql(pm.environment.get(\"random_username\"));\r",
+									"});\r",
+									"pm.test(\"Validate the response time\", () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000); \r",
+									"});\r",
+									"pm.environment.unset(\"random_email\");\r",
+									"pm.environment.unset(\"random_firstName\");\r",
+									"pm.environment.unset(\"random_lastName\");\r",
+									"pm.environment.unset(\"random_password\");\r",
+									"pm.environment.unset(\"random_phone\");\r",
+									"pm.environment.unset(\"random_username\");\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_URI}}/user/{{random_username}}",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"user",
+								"{{random_username}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'DELETE' \\\r\n  'https://petstore.swagger.io/v2/user/alna' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PET MODULE",
+			"item": [
+				{
+					"name": "ADD PET",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Validate response contains expected JSON structure\", () => {\r",
+									"    pm.response.to.be.json;  \r",
+									"    const responseBody = pm.response.json();\r",
+									"    pm.expect(responseBody).to.have.property('id');\r",
+									"    pm.expect(responseBody).to.have.property('name');\r",
+									"    pm.expect(responseBody).to.have.property('photoUrls');\r",
+									"    pm.expect(responseBody).to.have.property('tags');\r",
+									"    pm.expect(responseBody).to.have.property('status');\r",
+									"});\r",
+									"var jsonData = JSON.parse(pm.response.text());\r",
+									"pm.environment.set(\"id\",jsonData.id);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomId(max = 1000) {\r",
+									"  return Math.floor(Math.random() * max);\r",
+									"}\r",
+									"\r",
+									"function generateRandomCategoryName() {\r",
+									"  const categories = ['DOG', 'CAT', 'PARROT', 'MOUSE', 'SHEEP'];\r",
+									"  return categories[Math.floor(Math.random() * categories.length)];\r",
+									"}\r",
+									"\r",
+									"function generateRandomName() {\r",
+									"  const products = ['MILO', 'FLUFFY', 'CEASAR', 'ROCKY', 'ZAINE'];\r",
+									"  return products[Math.floor(Math.random() * products.length)];\r",
+									"}\r",
+									"\r",
+									"function generateRandomTagName() {\r",
+									"  const tags = ['LAB', 'PERSIAN', 'GERMAN', 'ROTT', 'POODLE'];\r",
+									"  return tags[Math.floor(Math.random() * tags.length)];\r",
+									"}\r",
+									"\r",
+									"function generateRandomStatus() {\r",
+									"  const statuses = [\"available\", \"sold\", \"pending\"];\r",
+									"  return statuses[Math.floor(Math.random() * statuses.length)];\r",
+									"}\r",
+									"\r",
+									"function generateRandomImageUrl() {\r",
+									"  const imageUrls = [\r",
+									"    \"https://via.placeholder.com/150\",\r",
+									"    \"https://via.placeholder.com/200\",\r",
+									"    \"https://via.placeholder.com/250\"\r",
+									"  ];\r",
+									"  return imageUrls[Math.floor(Math.random() * imageUrls.length)];\r",
+									"}\r",
+									"\r",
+									"pm.environment.set(\"randomCategoryId\",generateRandomId(6)); \r",
+									"pm.environment.set(\"randomCategoryName\", generateRandomCategoryName()); \r",
+									"pm.environment.set(\"randomName\", generateRandomName());\r",
+									"pm.environment.set(\"randomPhotoUrls\", generateRandomImageUrl());\r",
+									"pm.environment.set(\"randomTagName\", generateRandomTagName());\r",
+									"\r",
+									"pm.environment.set(\"randomStatus\", generateRandomStatus());\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"category\": {\r\n    \"id\": {{randomCategoryId}},\r\n    \"name\": \"{{randomCategoryName}}\"\r\n  },\r\n  \"name\": \"{{randomName}}\",\r\n  \"photoUrls\": [\r\n    \"{{randomPhotoUrls}}\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"{{randomTagName}}\"\r\n    }\r\n  ],\r\n  \"status\": \"{{randomStatus}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_URI}}/pet",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"pet"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/pet' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/xml' \\\r\n  -d '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<Pet>\r\n\t<id>0</id>\r\n\t<Category>\r\n\t\t<id>0</id>\r\n\t\t<name>string</name>\r\n\t</Category>\r\n\t<name>doggie</name>\r\n\t<photoUrls>\r\n\t\t<photoUrl>string</photoUrl>\r\n\t</photoUrls>\r\n\t<tags>\r\n\t\t<Tag>\r\n\t\t\t<id>0</id>\r\n\t\t\t<name>string</name>\r\n\t\t</Tag>\r\n\t</tags>\r\n\t<status>available</status>\r\n</Pet>'"
+					},
+					"response": []
+				},
+				{
+					"name": "GET PET BY STATUS",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_URI}}/pet/findByStatus?status=available",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"pet",
+								"findByStatus"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "available"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/pet/findByStatus?status=available' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE PET",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"function generateRandomCategoryName() {\r",
+									"  const categories = ['DOG', 'CAT', 'PARROT', 'MOUSE', 'SHEEP'];\r",
+									"  return categories[Math.floor(Math.random() * categories.length)];\r",
+									"}\r",
+									"\r",
+									"function generateRandomName() {\r",
+									"  const products = ['MILO', 'FLUFFY', 'CEASAR', 'ROCKY', 'ZAINE'];\r",
+									"  return products[Math.floor(Math.random() * products.length)];\r",
+									"}\r",
+									"\r",
+									"function generateRandomTagName() {\r",
+									"  const tags = ['LAB', 'PERSIAN', 'GERMAN', 'ROTT', 'POODLE'];\r",
+									"  return tags[Math.floor(Math.random() * tags.length)];\r",
+									"}\r",
+									"\r",
+									"function generateRandomStatus() {\r",
+									"  const statuses = [\"available\", \"sold\", \"pending\"];\r",
+									"  return statuses[Math.floor(Math.random() * statuses.length)];\r",
+									"}\r",
+									"\r",
+									"pm.environment.set(\"randomCategoryName\", generateRandomCategoryName()); \r",
+									"pm.environment.set(\"randomName\", generateRandomName());\r",
+									"pm.environment.set(\"randomTagName\", generateRandomTagName());\r",
+									"pm.environment.set(\"randomStatus\", generateRandomStatus());\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\",  ()=>{\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Validate response contains expected JSON structure\", () => {\r",
+									"    pm.response.to.be.json;  \r",
+									"    const responseBody = pm.response.json();\r",
+									"    pm.expect(responseBody).to.have.property('id');\r",
+									"    pm.expect(responseBody).to.have.property('name');\r",
+									"    pm.expect(responseBody).to.have.property('photoUrls');\r",
+									"    pm.expect(responseBody).to.have.property('tags');\r",
+									"    pm.expect(responseBody).to.have.property('status');\r",
+									"});\r",
+									"\r",
+									"const response=pm.response.json();\r",
+									"\r",
+									"pm.test(\"Verify the name \",()=>{\r",
+									"    pm.expect(response.name).to.be.eql(pm.variables.get(\"randomName\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify the category name \",()=>{\r",
+									"    pm.expect(response.category.name).to.be.eql(pm.variables.get(\"randomCategoryName\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify the tag name \",()=>{\r",
+									"    pm.expect(response.tags[0].name).to.be.eql(pm.variables.get(\"randomTagName\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify the status  \",()=>{\r",
+									"    pm.expect(response.status).to.be.eql(pm.variables.get(\"randomStatus\"));\r",
+									"});\r",
+									"\r",
+									"pm.environment.unset(\"randomCategoryId\");\r",
+									"pm.environment.unset(\"randomCategoryName\");\r",
+									"pm.environment.unset(\"randomName\");\r",
+									"pm.environment.unset(\"randomPhotoUrls\");\r",
+									"pm.environment.unset(\"randomTagName\");\r",
+									"pm.environment.unset(\"randomStatus\");\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"category\": {\r\n    \"id\": 0,\r\n    \"name\": \"{{randomCategoryName}}\"\r\n  },\r\n  \"name\": \"{{randomName}}\",\r\n  \"photoUrls\": [\r\n    \"string\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"{{randomTagName}}\"\r\n    }\r\n  ],\r\n  \"status\": \"{{randomStatus}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_URI}}/pet",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"pet"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'PUT' \\\r\n  'https://petstore.swagger.io/v2/pet' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 0,\r\n  \"category\": {\r\n    \"id\": 0,\r\n    \"name\": \"ALNA\"\r\n  },\r\n  \"name\": \"doggie\",\r\n  \"photoUrls\": [\r\n    \"string\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"string\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "STORE MODULE",
+			"item": [
+				{
+					"name": "FETCH INVENTORY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Validate response contains expected JSON structure\", () => {\r",
+									"    pm.response.to.be.json;  \r",
+									"    const responseBody = pm.response.json();\r",
+									"    pm.expect(responseBody).to.have.property('sold');\r",
+									"    pm.expect(responseBody).to.have.property('pending');\r",
+									"    pm.expect(responseBody).to.have.property('available');\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_URI}}/store/inventory",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"store",
+								"inventory"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/store/inventory' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE ORDER",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomId(min = 1, max = 9) {\r",
+									"  return Math.floor(Math.random() * (max - min + 1)) + min;\r",
+									"}\r",
+									"function generateRandomMillis() {\r",
+									"    return Math.floor(Math.random() * (2000000000)) - 1000000000;\r",
+									"}\r",
+									"const currentTime = new Date().getTime();\r",
+									"const randomTime = new Date(currentTime + generateRandomMillis());\r",
+									"const randomDateTime = randomTime.toISOString();\r",
+									"pm.variables.set(\"randomDateTime\", randomDateTime);\r",
+									"\r",
+									"pm.environment.set(\"randomId\",generateRandomId(8));\r",
+									"pm.environment.set(\"randomPetId\",generateRandomId(10));\r",
+									"pm.environment.set(\"randomQuantity\",generateRandomId(5));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify status code\",()=>{\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 2s\", ()=>{\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": {{randomId}},\r\n  \"petId\": {{randomPetId}},\r\n  \"quantity\": {{randomQuantity}},\r\n  \"shipDate\": \"{{randomDateTime}}\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_URI}}/store/order",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"store",
+								"order"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/store/order' \\\r\n  -H 'accept: application/json' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -d '{\r\n  \"id\": 22,\r\n  \"petId\": 6768,\r\n  \"quantity\": 1,\r\n  \"shipDate\": \"2024-11-24T10:14:55.758Z\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "FETCH ORDER BY ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify status code\",()=>{\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 2s\", ()=>{\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_URI}}/store/order/{{randomId}}",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"store",
+								"order",
+								"{{randomId}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://petstore.swagger.io/v2/store/order/6' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE ORDER",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 2s\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_URI}}/store/order/{{randomId}}",
+							"host": [
+								"{{base_URI}}"
+							],
+							"path": [
+								"store",
+								"order",
+								"{{randomId}}"
+							]
+						},
+						"description": "Generated from cURL: curl -X 'DELETE' \\\r\n  'https://petstore.swagger.io/v2/store/order/6' \\\r\n  -H 'accept: application/json'"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
